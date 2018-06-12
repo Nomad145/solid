@@ -2,24 +2,29 @@
 
 namespace App\Command;
 
+use App\Report\Formatter\CSVFormatter;
+use App\Repository\ReportRepositoryInterface;
 use Doctrine\DBAL\Connection;
 use Swift_Attachment as Attachment;
 use Swift_Mailer as Mailer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use App\Report\Formatter\CSVFormatter;
 
 class EmailReportCommand extends Command
 {
     protected static $defaultName = 'app:email-report';
 
-    public function __construct(Connection $dbal, Mailer $mailer)
-    {
+    public function __construct(
+        Connection $dbal,
+        Mailer $mailer,
+        ReportRepositoryInterface $reportRepo
+    ) {
         parent::__construct();
 
         $this->dbal = $dbal;
         $this->mailer = $mailer;
+        $this->reportRepo = $reportRepo;
     }
 
     protected function configure()
@@ -45,9 +50,11 @@ class EmailReportCommand extends Command
 
     private function sendMailAttachment(string $filePath): void
     {
-        $message = (new \Swift_Message('Nightly Sales Report'))
+        $report = $this->reportRepo->findOneByName('Nightly Sales Report');
+
+        $message = (new \Swift_Message($report->getName()))
             ->setFrom('no-reply@bigsales.net')
-            ->setTo('ceo@bigsales.net')
+            ->setTo($report->getRecipients())
             ->attach(Attachment::fromPath($filePath));
 
         $this->mailer->send($message);
