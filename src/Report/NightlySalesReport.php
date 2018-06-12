@@ -7,7 +7,7 @@ use InvalidArgumentException;
 /**
  * @author Michael Phillips <michael.phillips@realpage.com>
  */
-class NightlySalesReport
+class NightlySalesReport implements ReportInterface
 {
     private const NAME = 'Nightly Sales Report';
 
