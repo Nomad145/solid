@@ -8,8 +8,10 @@ use App\Repository\ReportRepositoryInterface;
 use Doctrine\DBAL\Connection;
 use Swift_Attachment as Attachment;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use UnexpectedValueException;
 
 class EmailReportCommand extends Command
 {
@@ -40,12 +42,23 @@ class EmailReportCommand extends Command
 
     protected function configure()
     {
-        $this->setDescription('Gather report info and deliver it to recipients as an email attachment');
+        $this
+            ->setDescription('Gather report info and deliver it to recipients as an email attachment')
+            ->addArgument('report', InputArgument::REQUIRED, 'Which report would you like to send?');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $report = $this->reportRepo->findOneByName('Nightly Sales Report');
+        $reportName = $input->getArgument('report');
+
+        $report = $this->reportRepo->findOneByName($reportName);
+
+        if (null === $report) {
+            throw new UnexpectedValueException(sprintf(
+                'Unable to find report %s',
+                $reportName
+            ));
+        }
 
         $data = $this->dbal->query($report->getQuery())->fetchAll();
 
