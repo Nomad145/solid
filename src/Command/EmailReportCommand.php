@@ -2,16 +2,14 @@
 
 namespace App\Command;
 
-use App\Report\Formatter\CSVFormatter;
+use App\Report\Formatter\FormatterInterface;
 use App\Report\Mailer\ReportMailerInterface;
-use App\Report\ReportInterface;
 use App\Repository\ReportRepositoryInterface;
 use Doctrine\DBAL\Connection;
 use Swift_Attachment as Attachment;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\HttpFoundation\File\File;
 
 class EmailReportCommand extends Command
 {
@@ -29,13 +27,15 @@ class EmailReportCommand extends Command
     public function __construct(
         Connection $dbal,
         ReportMailerInterface $mailer,
-        ReportRepositoryInterface $reportRepo
+        ReportRepositoryInterface $reportRepo,
+        FormatterInterface $formatter
     ) {
         parent::__construct();
 
         $this->dbal = $dbal;
         $this->mailer = $mailer;
         $this->reportRepo = $reportRepo;
+        $this->formatter = $formatter;
     }
 
     protected function configure()
@@ -49,15 +49,8 @@ class EmailReportCommand extends Command
 
         $data = $this->dbal->query($report->getQuery())->fetchAll();
 
-        $file = $this->writeCSVFile($data);
+        $file = $this->formatter->formatAsFile($data);
 
         $this->mailer->sendReportAsAttachment($report, $file);
-    }
-
-    private function writeCSVFile(array $data): File
-    {
-        $formatter = new CSVFormatter();
-
-        return $formatter->formatAsFile($data);
     }
 }
