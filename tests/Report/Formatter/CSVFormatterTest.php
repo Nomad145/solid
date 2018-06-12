@@ -3,7 +3,7 @@
 namespace Tests\Report\Formatter;
 
 use App\Report\Formatter\CSVFormatter;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Michael Phillips <michael.phillips@realpage.com>

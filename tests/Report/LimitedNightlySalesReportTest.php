@@ -1,6 +1,6 @@
 <?php
 
-namespace Test;
+namespace App\Test\Report;
 
 use App\Report\LimitedNightlySalesReport;
 use PHPUnit\Framework\TestCase;
