@@ -37,8 +37,4 @@ class CSVFormatter implements FileFormatterInterface
 
         fclose($file);
     }
-
-    public function formatAsString(array $data): string
-    {
-    }
 }
