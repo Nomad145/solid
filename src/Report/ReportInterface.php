@@ -10,4 +10,6 @@ interface ReportInterface
     public function getName(): string;
 
     public function getRecipients(): array;
+
+    public function getQuery(): string;
 }

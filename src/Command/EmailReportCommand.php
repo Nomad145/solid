@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Report\Formatter\CSVFormatter;
+use App\Report\ReportInterface;
 use App\Repository\ReportRepositoryInterface;
 use Doctrine\DBAL\Connection;
 use Swift_Attachment as Attachment;
@@ -34,11 +35,16 @@ class EmailReportCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $data = $this->dbal->query('SELECT * FROM report_data')->fetchAll();
+        $report = $this->reportRepo->findOneByName('Nightly Sales Report');
+
+        $data = $this
+            ->dbal
+            ->query($report->getQuery())
+            ->fetchAll();
 
         $filePath = $this->writeCSVFile($data);
 
-        $this->sendMailAttachment($filePath);
+        $this->sendMailAttachment($report, $filePath);
     }
 
     private function writeCSVFile(array $data): string
@@ -48,10 +54,8 @@ class EmailReportCommand extends Command
         return (string) $formatter->formatAsFile($data);
     }
 
-    private function sendMailAttachment(string $filePath): void
+    private function sendMailAttachment(ReportInterface $report, string $filePath): void
     {
-        $report = $this->reportRepo->findOneByName('Nightly Sales Report');
-
         $message = (new \Swift_Message($report->getName()))
             ->setFrom('no-reply@bigsales.net')
             ->setTo($report->getRecipients())

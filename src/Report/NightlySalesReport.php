@@ -42,4 +42,9 @@ class NightlySalesReport implements ReportInterface
     {
         return $this->recipients;
     }
+
+    public function getQuery(): string
+    {
+        return 'SELECT * FROM report_data';
+    }
 }

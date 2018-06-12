@@ -29,4 +29,13 @@ class NightlySalesNightlySalesReportTest extends TestCase
 
         $subject = new NightlySalesReport($recipients);
     }
+
+    public function testGetQuery()
+    {
+        $recipients = ['foo@gmail.com', 'bar@yahoo.com'];
+
+        $subject = new NightlySalesReport($recipients);
+
+        self::assertEquals('SELECT * FROM report_data', $subject->getQuery());
+    }
 }
