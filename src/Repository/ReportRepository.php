@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Report\LimitedNightlySalesReport;
 use App\Report\NightlySalesReport;
 use App\Report\ReportInterface;
 
@@ -21,6 +22,7 @@ class ReportRepository implements ReportRepositoryInterface
                 'cfo@bigsales.net',
                 'marketing@bigsales.net',
             ]),
+            new LimitedNightlySalesReport(['manager@bigsales.net'], 1),
         ];
     }
 
@@ -37,6 +39,6 @@ class ReportRepository implements ReportRepositoryInterface
             return null;
         }
 
-        return $reports[0];
+        return array_shift($reports);
     }
 }
