@@ -8,6 +8,7 @@ use Swift_Mailer as Mailer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use App\Report\Formatter\CSVFormatter;
 
 class EmailReportCommand extends Command
 {
@@ -37,19 +38,9 @@ class EmailReportCommand extends Command
 
     private function writeCSVFile(array $data): string
     {
-        $filePath = '/tmp/'.uniqid().'.csv';
+        $formatter = new CSVFormatter();
 
-        $fp = fopen($filePath, 'w+');
-
-        fputcsv($fp, array_keys($data[0]));
-
-        foreach ($data as $row) {
-            fputcsv($fp, $row);
-        }
-
-        fclose($fp);
-
-        return $filePath;
+        return (string) $formatter->formatAsFile($data);
     }
 
     private function sendMailAttachment(string $filePath): void
