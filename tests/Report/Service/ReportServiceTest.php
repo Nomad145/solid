@@ -2,7 +2,7 @@
 
 namespace Tests\Report\Service;
 
-use App\Report\Formatter\FormatterInterface;
+use App\Report\Formatter\FileFormatterInterface;
 use App\Report\Mailer\ReportMailerInterface;
 use App\Report\NightlySalesReport;
 use App\Report\Service\ReportService;
@@ -23,7 +23,7 @@ class ReportServiceTest extends TestCase
         $this->dbal = $this->createMock(Connection::class);
         $this->mailer = $this->createMock(ReportMailerInterface::class);
         $this->repo = $this->createMock(ReportRepositoryInterface::class);
-        $this->formatter = $this->createMock(FormatterInterface::class);
+        $this->formatter = $this->createMock(FileFormatterInterface::class);
 
         $this->subject = new ReportService($this->dbal, $this->mailer, $this->repo, $this->formatter);
     }

@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\File\File;
 /**
  * @author Michael Phillips <michael.phillips@realpage.com>
  */
-class CSVFormatter implements FormatterInterface
+class CSVFormatter implements FileFormatterInterface
 {
     private const ROOT_DIR = '/tmp';
 

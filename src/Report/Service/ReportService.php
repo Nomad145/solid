@@ -2,12 +2,11 @@
 
 namespace App\Report\Service;
 
-use App\Report\Formatter\FormatterInterface;
+use App\Report\Formatter\FileFormatterInterface;
 use App\Report\Mailer\ReportMailerInterface;
 use App\Repository\ReportRepositoryInterface;
 use Doctrine\DBAL\Connection;
 use UnexpectedValueException;
-use App\Report\Service\ReportServiceInterface;
 
 /**
  * @author Michael Phillips <michael.phillips@realpage.com>
@@ -18,7 +17,7 @@ class ReportService implements ReportServiceInterface
         Connection $dbal,
         ReportMailerInterface $mailer,
         ReportRepositoryInterface $reportRepo,
-        FormatterInterface $formatter
+        FileFormatterInterface $formatter
     ) {
         $this->dbal = $dbal;
         $this->mailer = $mailer;
